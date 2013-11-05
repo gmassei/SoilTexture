@@ -1,0 +1,22 @@
+# Mandatory items:
+[general]
+name=SoilTexture
+description=Build soil texture map  from sand and clay raster maps
+category=Raster
+version=2.0
+qgisMinimumVersion=2.0
+#qgisMaximumVersion=2.99
+
+tags=raster, analysis, soils
+
+homepage=http://maplab.alwaysdata.net/
+tracker=http://hub.qgis.org/projects/
+repository=http://code.google.com/p/soiltexture/
+icon=icon.png
+
+experimental=False
+deprecated=False
+
+# Author contact information
+author=Gianluca Massei
+email=g_massa@libero.it

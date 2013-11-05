@@ -1,0 +1,6 @@
+<RCC> 
+  <qresource prefix="/plugins/soiltexture" > 
+    <file>icon.png</file> 
+  </qresource> 
+</RCC> 
+
