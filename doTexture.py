@@ -5,7 +5,7 @@
 ## Define soil texture from sand and clay raster maps
 ##							 -------------------
 ## begin				: 2010-11-14
-## copyright			: (C) 2010 by Gianluca Massei
+## copyright			: (C) 2010-2015 by Gianluca Massei
 ## email				: g_massa@libero.it
 ## **************************************************************************
 #-----------------------------------------------------------
@@ -65,8 +65,10 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 				self.cmbSand.addItem(layer.source())
 
 		currentDIR = unicode(os.path.abspath( os.path.dirname(__file__)))
-		listDat=[s for s in os.listdir(currentDIR) if fnmatch.fnmatch(s,'*.DAT')]
+		listDat=[s for s in os.listdir(currentDIR) if fnmatch.fnmatch(s,'*.dat')]
 		self.cmbSchema.addItems(listDat)
+		#self.textEdit.append(str(currentDIR))
+		print currentDIR,listDat
 		self.textEdit.clear()
 
 	def outFile(self):
@@ -263,6 +265,18 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 
 	def open_help(self):
 		webbrowser.open('http://maplab.alwaysdata.net/')
+		
+	def plotFile(self,dataClay,dataSand,outFile):
+		outDIR = unicode(os.path.abspath( os.path.dirname(outFile)))
+		ternaryPlot=os.path.join(outDIR,'ternaryPlot.csv')
+		pf=open(ternaryPlot,'w')
+		pf.write('CLAY,SAND,SILT\n')
+		for crow,srow in zip(dataClay,dataSand):
+			for c,s in zip(crow,srow):
+				if c>=0 and s>=0: 
+					values='%s,%s,%s\n' % (c,s,(100-c-s))
+					pf.write(values)
+		pf.close()
 
 	def accept(self):
 		# Called when "OK" button pressed
@@ -278,7 +292,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 		RuleList,numpoly,legend=self.readSchema(schema)
 		dataClay,dataSand,rows,cols,transform=self.ProcessRaster(sand,clay)
 		self.progressBar.setRange(0,rows)
-
+		
 		TextureList=[]
 		row=[]
 		self.textEdit.append("rows:%d, columns:%d" % (rows,cols))
@@ -287,12 +301,13 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 			self.progressBar.setValue(i)
 			row=[self.InsidePolygon(RuleList,numpoly, dS, dC) for (dS,dC) in zip(dataSand[i],dataClay[i])]
 			TextureList.append(row)
-
+		
 		TextureList=np.asarray(TextureList)
 		self.writeTextureGeoTiff(TextureList,transform, rows, cols, outFile)
 		self.loadTextureRaster(outFile)
 		vectorTexture=self.rast2vect(outFile,legend)
 		self.loadTextureVector(vectorTexture)
+		self.plotFile(dataClay,dataSand,outFile)
 		self.textEdit.append("end")
 
 
