@@ -5,7 +5,7 @@ qgisMinimumVersion=2.0
 #qgisMaximumVersion=2.99
 description=Build soil texture map  from sand and clay raster maps
 category=Raster
-version=2.0.2
+version=2.0.4
 
 tags=raster, analysis, soils
 
@@ -18,18 +18,15 @@ Ver. 0.9: improved documentation and corrected minor bugs
 Ver. 0.9.1: code unchanged, cleaned up plugin structure
 
 homepage=http://maplab.alwaysdata.net/soilstools.html
-tracker=http://hub.qgis.org/projects/
-repository=http://code.google.com/p/soiltexture/
+tracker=http://hub.qgis.org/projects/soiltexture
+repository=https://github.com/gmassei/SoilTexture
 icon=icon.png
 
 experimental=False
 deprecated=False
 
+about=The plugin require two raster: spatial distribution for sand and clay for the same area. The user must supply even the texture schema and the name of output file. [http://maplab.alwaysdata.net/soilstools.html]
+
 # Author contact information
 author=Gianluca Massei
 email=g_massa@libero.it
-
-homepage=http://maplab.alwaysdata.net/geomcda.html
-tracker=http://hub.qgis.org/projects/vectormcda
-repository=https://github.com/gmassei/VectorMCDA
-icon=icons/Tree.png
