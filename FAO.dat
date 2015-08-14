@@ -1,0 +1,19 @@
+3
+1
+4
+0	65	0	0
+100	35	35	100
+2
+7
+0	65	82	68	68	0	0
+35	35	18	18	0	0	35
+3
+5
+82	100	68	68	82
+18	0	0	18	18
+Scheme: Food and Agriculture Organization - Ref: Verheye, W., and J. Ameryckx. 1984. Mineral fractions and classificaton of soil texture. Pedologie, 2, 215-225.
+0=none
+1=fine
+2=medium
+3=coarse
+(sand:0.05-2.0; clay:<0.002; silt: 0.002-0.05)
