@@ -1,15 +1,23 @@
 # Mandatory items:
 [general]
 name=SoilTexture
-description=Build soil texture map  from sand and clay raster maps
-category=Raster
-version=2.0.1
 qgisMinimumVersion=2.0
 #qgisMaximumVersion=2.99
+description=Build soil texture map  from sand and clay raster maps
+category=Raster
+version=2.0.2
 
 tags=raster, analysis, soils
 
-homepage=http://maplab.alwaysdata.net/
+changelog=Ver. 0.1: First release.
+Ver. 0.2: several bugs in geoPromethee are corrected
+Ver. 0.4: improve and upgrade geoWeightedSum algorithm
+Ver. 0.6: improve and upgrade geoFuzzy algorithm, tested geoWeightedSum, geoTOPSIS and geoFUZZY output
+Ver. 0.8: improve and upgrade geoConcordance and geoPromethee
+Ver. 0.9: improved documentation and corrected minor bugs
+Ver. 0.9.1: code unchanged, cleaned up plugin structure
+
+homepage=http://maplab.alwaysdata.net/soilstools.html
 tracker=http://hub.qgis.org/projects/
 repository=http://code.google.com/p/soiltexture/
 icon=icon.png
@@ -20,3 +28,8 @@ deprecated=False
 # Author contact information
 author=Gianluca Massei
 email=g_massa@libero.it
+
+homepage=http://maplab.alwaysdata.net/geomcda.html
+tracker=http://hub.qgis.org/projects/vectormcda
+repository=https://github.com/gmassei/VectorMCDA
+icon=icons/Tree.png
