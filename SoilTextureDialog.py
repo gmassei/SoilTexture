@@ -19,10 +19,11 @@ email                : g_massa@libero.it
  ***************************************************************************/
 """
 
-from PyQt4 import QtCore, QtGui 
-from Ui_SoilTexture import Ui_SoilTexture
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QDialog
+from .Ui_SoilTexture import Ui_SoilTexture
 
-class SoilTextureDialog(QtGui.QDialog):
+class SoilTextureDialog(QDialog):
   def __init__(self): 
     QtGui.QDialog.__init__(self) 
     # Set up the user interface from Designer. 

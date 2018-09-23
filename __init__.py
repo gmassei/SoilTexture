@@ -5,7 +5,7 @@ A QGIS plugin
 Define soil texture from sand and clay raster maps
                              -------------------
 begin                : 2010-11-14
-copyright            : (C) 2010-2014 by Gianluca Massei
+copyright            : (C) 2010-2018 by Gianluca Massei
 email                : g_massa@libero.it
  ***************************************************************************/
 
@@ -21,5 +21,5 @@ email                : g_massa@libero.it
 
 def classFactory(iface):
   # load SoilTexture class from file SoilTexture
-  from SoilTexture import SoilTexture
+  from .SoilTexture import SoilTexture
   return SoilTexture(iface)

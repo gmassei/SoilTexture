@@ -1,32 +1,29 @@
-# Mandatory items:
 [general]
 name=SoilTexture
-qgisMinimumVersion=2.0
-#qgisMaximumVersion=2.99
+qgisMinimumVersion=2.99
+qgisMaximumVersion=3.99
 description=Build soil texture map  from sand and clay raster maps
-category=Raster
-version=2.0.4
+version=2.99
+author=author=Gianluca Massei
+email=g_massa@libero
 
 tags=raster, analysis, soils
-
-changelog=Ver. 0.1: First release.
-Ver. 0.2: several bugs in geoPromethee are corrected
-Ver. 0.4: improve and upgrade geoWeightedSum algorithm
-Ver. 0.6: improve and upgrade geoFuzzy algorithm, tested geoWeightedSum, geoTOPSIS and geoFUZZY output
-Ver. 0.8: improve and upgrade geoConcordance and geoPromethee
-Ver. 0.9: improved documentation and corrected minor bugs
-Ver. 0.9.1: code unchanged, cleaned up plugin structure
-
-homepage=http://maplab.alwaysdata.net/soilstools.html
-tracker=http://hub.qgis.org/projects/soiltexture
-repository=https://github.com/gmassei/SoilTexture
-icon=icon.png
-
-experimental=False
-deprecated=False
-
 about=The plugin require two raster: spatial distribution for sand and clay for the same area. The user must supply even the texture schema and the name of output file. [http://maplab.alwaysdata.net/soilstools.html]
 
-# Author contact information
-author=Gianluca Massei
-email=g_massa@libero.it
+tracker=http://hub.qgis.org/projects/soiltexture
+repository=https://github.com/gmassei/SoilTexture
+
+changelog= 2.99 porting in QGIS3
+2.0.4: stable version, with R - soil texture wizard output interface
+0.1: First release.
+
+homepage=http://maplab.alwaysdata.net/soilstools.html
+
+icon=icon.png
+
+category=Raster
+experimental=True
+deprecated=False
+
+
+

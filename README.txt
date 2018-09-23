@@ -30,5 +30,6 @@ TT.plot(geo=geo,class.sys="USDA.TT", add=TRUE)
 # for rebuild gui:
 
 rm *.pyc
-pyuic4 -o Ui_SoilTexture.py Ui_SoilTexture.ui
-pyrcc4 -o resources.py resources.qrc 
+
+pyuic5 -x Ui_SoilTexture.ui -o Ui_SoilTexture.py
+pyrcc5 -o resources.py resources.qrc

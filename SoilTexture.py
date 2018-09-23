@@ -18,15 +18,20 @@ email                : g_massa@libero.it
 *                                                                         *
 ***************************************************************************/
 """
+
+from __future__ import absolute_import
+
+
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QDialog, QMessageBox, QMenu, QAction
 from qgis.core import *
 # Initialize Qt resources from file resources.py
-import resources
+from . import resources
 # Import the code for the dialog
-from SoilTextureDialog import SoilTextureDialog
-import doTexture
+from .SoilTextureDialog import SoilTextureDialog
+from . import doTexture
 
 class SoilTexture:
 
@@ -39,11 +44,12 @@ class SoilTexture:
 		self.action = QAction(QIcon(":/plugins/soiltexture/icon.png"), \
 			"Soil texture", self.iface.mainWindow())
 		# connect the action to the run method
-		QObject.connect(self.action, SIGNAL("triggered()"), self.run)
-
+		#self.connect(self.action, SIGNAL("triggered()"), self.run)
+		
 		# Add toolbar button and menu item
 		self.iface.addToolBarIcon(self.action)
 		self.iface.addPluginToMenu("&Soil texture", self.action)
+		self.action.triggered.connect(self.run)
 
 	def unload(self):
 		# Remove the plugin menu item and icon

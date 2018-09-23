@@ -5,7 +5,7 @@
 ## Define soil texture from sand and clay raster maps
 ##							 -------------------
 ## begin				: 2010-11-14
-## copyright			: (C) 2010-2015 by Gianluca Massei
+## copyright			: (C) 2010-2017 by Gianluca Massei
 ## email				: g_massa@libero.it
 ## **************************************************************************
 #-----------------------------------------------------------
@@ -28,10 +28,23 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
+from __future__ import absolute_import
+
+from builtins import zip
+from builtins import str
+from builtins import range
+
+
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox # QMenu
+
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from qgis.PyQt import QtGui
 from qgis.core import *
-from Ui_SoilTexture import Ui_SoilTexture
+from qgis.gui import *
+
+from .Ui_SoilTexture import Ui_SoilTexture
 
 import os, sys, time
 from osgeo import gdal, ogr, osr
@@ -48,10 +61,10 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 		QDialog.__init__(self)
 		self.iface = iface
 		self.setupUi(self)
-		self.connect(self.btnOutput, SIGNAL("clicked()"), self.outFile)
-		self.connect(self.buttonBox, SIGNAL("accepted()"),self.accept)
-		QObject.connect(self.buttonBox, SIGNAL("rejected()"),self, SLOT("reject()"))
-		QObject.connect(self.btnHelp, SIGNAL("clicked()"),self.open_help)
+		self.btnOutput.clicked.connect(self.outFile)
+		self.buttonBox.accepted.connect(self.accept)
+		self.buttonBox.rejected.connect(self.reject)
+		self.btnHelp.clicked.connect(self.open_help)
 
 		mapCanvas = self.iface.mapCanvas()
 		# init dictionaries of items:
@@ -68,16 +81,17 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 		listDat=[s for s in os.listdir(currentDIR) if fnmatch.fnmatch(s,'*.dat')]
 		self.cmbSchema.addItems(listDat)
 		#self.textEdit.append(str(currentDIR))
-		print currentDIR,listDat
+		print(currentDIR,listDat)
 		self.textEdit.clear()
 
 	def outFile(self):
 		"Display file dialog for output texture file"
 		self.lineOutput.clear()
 		outName = QFileDialog.getSaveFileName(self, "Texture output file",".", "GeoTiff (*.tif)")
+		print(outName[0])
 		#if not outName.isEmpty():
 		self.lineOutput.clear()
-		self.lineOutput.insert(outName)
+		self.lineOutput.insert(outName[0])
 		return outName
 
 	def readSchema(self,schema):
@@ -109,7 +123,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 			self.textEdit.clear()
 			for l in legend:
 				self.textEdit.append(l)
-				print l
+				print(l)
 			return RuleList, numpoly,legend
 
 		except:
@@ -175,13 +189,13 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 			format = "GTiff"
 			driver = gdal.GetDriverByName( format )
 			NOVALUE=-9999
-			metadata = driver.GetMetadata()
-			if metadata.has_key(gdal.DCAP_CREATE) \
-				and metadata[gdal.DCAP_CREATE] == 'YES':
-				pass
-			else:
-				QMessageBox.information(None,"info","Driver %s does not support Create() method." % format)
-				return False
+			#metadata = driver.GetMetadata()
+			#if metadata.has_key(gdal.DCAP_CREATE) \
+				#and metadata[gdal.DCAP_CREATE] == 'YES':
+				#pass
+			#else:
+				#QMessageBox.information(None,"info","Driver %s does not support Create() method." % format)
+				#return False
 			outDataset = driver.Create(str(outFile), cols, rows, 1, gdal.GDT_Byte)
 			outTexture=outDataset.GetRasterBand(1)
 			outTexture.WriteArray(arrayData)
@@ -190,7 +204,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 			return True
 		except:
 			QMessageBox.information(None,"Exiting","I can't write %s texture file." % outFile)
-			return
+			return 1
 
 	def loadTextureRaster(self,outFile):
 		"Load texture map in TOC"
@@ -201,7 +215,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 			self.textEdit.append("Layer failed to load!")
 		#rlayer.setDrawingStyle(QgsRasterLayer.SingleBandPseudoColor)
 		#rlayer.setColorShadingAlgorithm(QgsRasterLayer.FreakOutShader)
-		QgsMapLayerRegistry.instance().addMapLayer(rlayer)
+		QgsProject.instance().addMapLayer(rlayer)
 		return rlayer
 
 	def rast2vect(self,rasterTexture,legend):
@@ -265,7 +279,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 
 	def open_help(self):
 		webbrowser.open('http://maplab.alwaysdata.net/')
-		
+
 	def plotFile(self,dataClay,dataSand,outFile):
 		outDIR = unicode(os.path.abspath( os.path.dirname(outFile)))
 		ternaryPlot=os.path.join(outDIR,'ternaryPlot.csv')
@@ -273,7 +287,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 		pf.write('CLAY,SAND,SILT\n')
 		for crow,srow in zip(dataClay,dataSand):
 			for c,s in zip(crow,srow):
-				if c>=0 and s>=0: 
+				if c>=0 and s>=0:
 					values='%s,%s,%s\n' % (c,s,(100-c-s))
 					pf.write(values)
 		pf.close()
@@ -292,7 +306,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 		RuleList,numpoly,legend=self.readSchema(schema)
 		dataClay,dataSand,rows,cols,transform=self.ProcessRaster(sand,clay)
 		self.progressBar.setRange(0,rows)
-		
+
 		TextureList=[]
 		row=[]
 		self.textEdit.append("rows:%d, columns:%d" % (rows,cols))
@@ -301,7 +315,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 			self.progressBar.setValue(i)
 			row=[self.InsidePolygon(RuleList,numpoly, dS, dC) for (dS,dC) in zip(dataSand[i],dataClay[i])]
 			TextureList.append(row)
-		
+
 		TextureList=np.asarray(TextureList)
 		self.writeTextureGeoTiff(TextureList,transform, rows, cols, outFile)
 		self.loadTextureRaster(outFile)
@@ -309,5 +323,3 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 		self.loadTextureVector(vectorTexture)
 		self.plotFile(dataClay,dataSand,outFile)
 		self.textEdit.append("end")
-
-
