@@ -47,7 +47,9 @@ from qgis.gui import *
 from .Ui_SoilTexture import Ui_SoilTexture
 
 import os, sys, time
-from osgeo import gdal, ogr, osr
+from osgeo import gdal
+from osgeo import ogr
+from osgeo import osr
 from osgeo.gdalconst import *
 
 import numpy as np
@@ -189,7 +191,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 			format = "GTiff"
 			driver = gdal.GetDriverByName( format )
 			NOVALUE=-9999
-			#metadata = driver.GetMetadata()
+			metadata = driver.GetMetadata()
 			#if metadata.has_key(gdal.DCAP_CREATE) \
 				#and metadata[gdal.DCAP_CREATE] == 'YES':
 				#pass
@@ -201,6 +203,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 			outTexture.WriteArray(arrayData)
 			outTexture.SetNoDataValue(NOVALUE)
 			outDataset.SetGeoTransform(transform)
+			print(transform)
 			return True
 		except:
 			QMessageBox.information(None,"Exiting","I can't write %s texture file." % outFile)
@@ -229,10 +232,8 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 		spatialReference = osr.SpatialReference()
 		spatialReference.ImportFromWkt( srcRaster.GetProjectionRef() )
 		# 	Create output file.
-
 		pathSource=os.path.dirname(rasterTexture)
 		fileName=os.path.splitext(os.path.basename(rasterTexture))[0]
-
 		driver = ogr.GetDriverByName('ESRI Shapefile')
 		dstPath=os.path.join(pathSource,fileName+".shp")
 		dstFile = driver.CreateDataSource(dstPath)
@@ -245,7 +246,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 			dst_field = 0
 			#Polygonize
 			prog_func = gdal.TermProgress
-			result = gdal.Polygonize(srcband, None, dstLayer, dst_field, options, callback = prog_func)
+			gdal.Polygonize(srcband, None, dstLayer, dst_field, options, callback =None)
 			#Create texture label field
 			fieldLabel = ogr.FieldDefn('label_txt', ogr.OFTString )
 			fieldLabel.SetWidth(50)
@@ -272,7 +273,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 		""" Load thematic layers in canvas """
 		if os.path.exists(vectorTexture):
 			layer = QgsVectorLayer(vectorTexture, "texture", "ogr")
-			QgsMapLayerRegistry.instance().addMapLayer(layer)
+			QgsProject.instance().addMapLayer(layer)
 		else:
 			return 0
 
@@ -320,6 +321,7 @@ class SoilTextureDialog(QDialog, Ui_SoilTexture):
 		self.writeTextureGeoTiff(TextureList,transform, rows, cols, outFile)
 		self.loadTextureRaster(outFile)
 		vectorTexture=self.rast2vect(outFile,legend)
+		print(vectorTexture)
 		self.loadTextureVector(vectorTexture)
 		self.plotFile(dataClay,dataSand,outFile)
 		self.textEdit.append("end")
